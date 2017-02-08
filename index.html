@@ -95,8 +95,16 @@ var CoinTossing = Vue.component('coin-tossing', {
     <h1>Heads or Tails</h1>
     <p>For our next example, we consider a problem where the exact answer is difficult to obtain but for which simulation easily gives the qualitative results. Peter and Paul play a game called heads or tails. In this game, a fair coin is tossed a sequence of times—we choose 40. Each time a head comes up Peter wins 1 penny from Paul, and each time a tail comes up Peter loses 1 penny to Paul. For example, if the results of the 40 tosses are THTHHHHTTHTHHTTHHTTTTHHHTHHTHHHTHHHTTTHH</p>
     <input type="number" v-model="n" v-on:keyup.enter="display_random">
-    <div>{{pennies}}</div>
-    <p>{{result_str}}</p>
+    <div>${{pennies / 100}}</div>
+    <p class="graphic" v-if="roles.length > 0">
+      <span v-for="role in roles" v-if="n <= 400">
+        <img class="coin" v-if="role == 1" src="coin_head.png" alt="H">
+        <img class="coin" v-else src="coin_tail.png" alt="T">
+      </span>
+    </p>
+    <p class="graphic" v-else color="red">
+      Images not shown for performance reasons.
+    </p>
   </div>
 </script>
 <script>
@@ -106,22 +114,22 @@ var HeadsOrTails = Vue.component('heads-tails', {
     return {
       pennies: 0,
       n: 0,
-      result_str: "",
+      roles: []
     }
   },
   methods: {
     display_random: function() {
-      this.result_str = "";
+      this.roles = [];
       this.pennies = 0;
       for (var i = 0; i < this.n; i++) {
         if(Math.floor((Math.random() * 2) + 0) === 1) {
           if (this.n < 10000) {
-            this.result_str += "H ";
+            this.roles.push(1);
           }
           this.pennies++;
         } else {
           if (this.n < 10000) {
-            this.result_str += "T ";
+            this.roles.push(0);
           }
           this.pennies--;
         }
@@ -130,6 +138,16 @@ var HeadsOrTails = Vue.component('heads-tails', {
   }
 })
 </script>
+<style>
+#heads_tails .coin {
+    width: 64px;
+    height: 64px;
+}
+#heads_tails .graphic {
+    background: #FFF;
+    padding: 10px;
+}
+</style>
 
 <!-- DICE ROLLING PAGE -->
 <script type="text/x-template" id="dice_rolling_t">
