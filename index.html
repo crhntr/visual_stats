@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math352 Simulator</title>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+
+<!-- DISPLAY RANDOM PAGE -->
+<script type="text/x-template" id="random_number_t">
+  <div id="display_random" class="page">
+    <h1>Random Number Generation</h1>
+    <p>The program RandomNumbers generates n random real numbers in the interval [0, 1], where n is chosen by the user. Run the program with n = 20.</p>
+    <input type="number" v-model="n" v-on:keyup.enter="display_random">
+    <div v-for="num in psudo_rand_num">{{num}}<div>
+  </div>
+</script>
+<script>
+var RandomNumber = Vue.component('random-number', {
+  template: '#random_number_t',
+  data: function () {
+    return {
+      n: 0,
+      psudo_rand_num: [],
+    }
+  },
+  methods: {
+    display_random: function() {
+      for (var i = 0; i < this.n; i++) {
+        this.psudo_rand_num.push(Math.random());
+      }
+    }
+  }
+})
+</script>
+
+<!-- COIN TOSSING PAGE -->
+<script type="text/x-template" id="coin_tossing_t">
+  <div id="coin_tossing" class="page">
+    <h1>Coin Tossing</h1>
+    <p>As we have noted, our intuition suggests that the probability of obtaining a head on a single toss of a coin is 1/2. To have the computer toss a coin, we can ask it to pick a random real number in the interval [0, 1] and test to see if this number is less than 1/2. If so, we shall call the outcome heads; if not we call it tails. Another way to proceed would be to ask the computer to pick a random integer from the set {0, 1}. The program CoinTosses carries out the experiment of tossing a coin n times. Run this program, with n = 20, n = 100, n = 1000 and n = 10000.</p>
+    <ul>
+      <li>How many heads you got in each case</li>
+      <li>What did you notice?</li>
+    </ul>
+    <input type="number" v-model="n" v-on:keyup.enter="display_random">
+    <div>
+      <label>Average:</label> {{average}}
+      <p>{{psudo_rand_num_display}}</p>
+    </div>
+  </div>
+</script>
+<script>
+var CoinTossing = Vue.component('coin-tossing', {
+  template: '#coin_tossing_t',
+  data: function () {
+    return {
+      n: 0,
+      psudo_rand_num: [],
+      psudo_rand_num_display: "",
+      average: 0
+    }
+  },
+  watch: {
+    'psudo_rand_num': function() {
+      if (this.n != 0) {
+        var sum = 0;
+        this.psudo_rand_num_display = "";
+
+        for (var i = 0; i < this.n; i++) {
+          sum += this.psudo_rand_num[i];
+          this.psudo_rand_num_display +=  "" + this.psudo_rand_num[i] + "\t";
+        }
+        this.average =  sum / this.n;
+      }
+    }
+  },
+  methods: {
+    display_random: function() {
+      this.psudo_rand_num = [];
+      for (var i = 0; i < this.n; i++) {
+        this.psudo_rand_num.push(Math.floor((Math.random() * 2) + 0));
+      }
+    }
+  }
+})
+</script>
+
+<!-- DISPLAY RANDOM PAGE -->
+<script type="text/x-template" id="heads_tails_t">
+  <div id="heads_tails" class="page">
+    <h1>Heads or Tails</h1>
+    <p>For our next example, we consider a problem where the exact answer is difficult to obtain but for which simulation easily gives the qualitative results. Peter and Paul play a game called heads or tails. In this game, a fair coin is tossed a sequence of times—we choose 40. Each time a head comes up Peter wins 1 penny from Paul, and each time a tail comes up Peter loses 1 penny to Paul. For example, if the results of the 40 tosses are THTHHHHTTHTHHTTHHTTTTHHHTHHTHHHTHHHTTTHH</p>
+    <input type="number" v-model="n" v-on:keyup.enter="display_random">
+    <div>{{pennies}}</div>
+    <p>{{result_str}}</p>
+  </div>
+</script>
+<script>
+var HeadsOrTails = Vue.component('heads-tails', {
+  template: '#heads_tails_t',
+  data: function () {
+    return {
+      pennies: 0,
+      n: 0,
+      result_str: "",
+    }
+  },
+  methods: {
+    display_random: function() {
+      this.result_str = "";
+      for (var i = 0; i < this.n; i++) {
+        if(Math.floor((Math.random() * 2) + 0) === 1) {
+          if (this.n < 10000) {
+            this.result_str += "H ";
+          }
+          this.pennies++;
+        } else {
+          if (this.n < 10000) {
+            this.result_str += "T ";
+          }
+          this.pennies--;
+        }
+      }
+    }
+  }
+})
+</script>
+
+<!-- DICE ROLLING PAGE -->
+<script type="text/x-template" id="dice_rolling_t">
+  <div id="dice_rolling" class="page">
+    <h1>Dice Rolling</h1>
+    <p>We consider a dice game that played an important role in the historical development of probability. The famous letters between Pascal and Fermat, which many believe started a serious study of probability, were instigated by a request for help from a French nobleman and gambler, Chevalier de Mere. It is said that de Mere had been betting that, in four rolls of a die, at least one six would turn up. He was winning consistently and, to get more people to play, he changed the game to bet that, in 24 rolls of two dice, a pair of sixes would turn up. It is claimed that de Mere lost with 24 and felt that 25 rolls were necessary to make the game favorable. It was un grand scandale that mathematics was wrong.</p>
+    <p>We shall try to see if de Mere is correct by simulating his various bets. The program DeMere1 simulates a large number of experiments, seeing, in each one, if a six turns up in four rolls of a die.</p>
+    <label for="games">Max Roles Per Game</label>
+    <input id="games" type="number" v-model="max_roles_per_game"><br>
+    <label for="games">Number of Games</label>
+    <input id="games" type="number" v-model="games"><br>
+    <button v-on:click="play_game">Play Game</button>
+    <label for="wins">Percent Won</label>
+    <div id=wins>%{{precent_won}}</div><br>
+  </div>
+</script>
+<script>
+var DiceRolling = Vue.component('dice-rolling', {
+  template: '#dice_rolling_t',
+  data: function () {
+    return {
+      max_roles_per_game: 0,
+      games: 0,
+      wins: 0,
+    }
+  },
+  computed: {
+    precent_won: function() {
+      if (this.games > 0) {
+        return (this.wins / this.games) * 100;
+      } else {
+        return 0
+      }
+    }
+  },
+  methods: {
+    play_game: function() {
+      this.wins = 0;
+      for (var i = 0; i < this.games; i++) {
+        console.log("\n\n====================\ngame: " + i + "\n")
+        for (var j = 0; j < this.max_roles_per_game; j++) {
+          var first = Math.floor((Math.random() * 6)) + 1;
+          var second = Math.floor((Math.random() * 6)) + 1;
+          // console.log("role: " + j + "; first: " + first + "; second: " + second + "")
+          // this.counts[first][second]++
+          if (first === 6 && second === 6) {
+            this.wins++;
+            break;
+          }
+        }
+      }
+    }
+  }
+})
+</script>
+
+<script type="text/x-template" id="spinner_t">
+  <div id="spinner" class="page">
+    <h1>Spinner</h1>
+    <p>We begin by constructing a spinner, which consists of a circle of unit circumference and a pointer. We pick a point on the circle and label it 0, and then label every other point on the circle with the distance, say x, from 0 to that point, measured counterclockwise. The experiment consists of spinning the pointer and recording the label of the point at the tip of the pointer. We let the random variable X denote the value of this outcome.</p>
+    <input type="number" v-model="n" v-on:keyup.enter="calculate_X">
+    <input type="number" v-model="x" v-on:keyup.enter="calculate_X">
+    <div>%{{ n ? X / n * 100 : ""}}</div>
+    <svg id="graphic" class="graphic">
+
+      <line
+      v-for="(rotation, index) in rotations"
+      x1="110" y1="110"
+      x2:rotation.x y2:rotation.y
+      style:rotation.style/>
+
+      <circle cx="110" cy="110" r="100" stroke="#DE0014" stroke-width="3" fill="none"/>
+      <line x1="110" y1="110" x2="210" y2="110" style="stroke:rgb(255,0,0);stroke-width:2;" />
+    </svg>
+  </div>
+</script>
+<script>
+var Spinner = Vue.component('spinner', {
+  template: '#spinner_t',
+  data: function () {
+    return {
+      n: 10,
+      x: 3,
+      X: 0,
+      rotations: []
+    }
+  },
+  mounted: function () {
+    this.calculate_X()
+  },
+  methods: {
+    calculate_X: function() {
+      this.X = 0;
+      for (var i = 0; i < this.n; i++) {
+        var spinner_distance = Math.random() * Math.PI * 2;
+
+        var rotation = {
+          x: 100 * Math.cos((spinner_distance * Math.PI) / 180),
+          y: 100 * Math.sin((spinner_distance * Math.PI) / 180),
+          style: "stroke: hsl(" + (Math.floor(Math.random() * 360))+",80% , 80%); stroke-width:2;"
+        }
+        this.rotations.push(rotation);
+        console.log(rotation)
+
+        if (spinner_distance <= this.x) {
+          this.X++;
+        }
+      }
+    },
+    add_line: function () {
+
+    }
+  }
+})
+</script>
+<style>
+#spinner {
+
+}
+#spinner > #graphic {
+  width: 220px;
+  height: 220px;
+  background: #F0F0F0;
+  padding: 5px;
+}
+</style>
+
+<script type="text/x-template" id="monte_carlo_simulation_t">
+  <div id="monte_carlo_simulation" class="page">
+    <h1>Monte Carlo Simulation</h1>
+    <p>In this example we show how simulation can be used to estimate areas of plane figures. Suppose that we program our computer to provide a pair (x, y) or numbers, each chosen independently at random from the interval [0, 1]. Then we can interpret this pair (x, y) as the coordinates of a point chosen at random from the unit square. Events are subsets of the unit square. Our experience with Example 2.1 suggests that the point is equally likely to fall in subsets of equal area. Since the total area of the square is 1, the probability of the point falling in a specific subset E of the unit square should be equal to its area. Thus, we can estimate the area of any subset of the unit square by estimating the probability that a point chosen at random from this square falls in the subset.</p>
+    <p>TO BE IMPLEMENTED</p>
+  </div>
+</script>
+<script>
+var MonteCarloSimulation = Vue.component('-', {
+  template: '#monte_carlo_simulation_t',
+  data: function () {
+    return {}
+  },
+  methods: {}
+})
+</script>
+
+<script type="text/x-template" id="buffons_needle_t">
+  <div id="buffons_needle" class="page">
+    <h1>Buffon’s Needle</h1>
+    <p>Suppose that we take a card table and draw across the top surface a set of parallel lines a unit distance apart. We then drop a common needle of  unit length at random on this surface and observe whether or not the needle lies across one of the lines. We can describe the possible outcomes of this experiment by coordinates as follows: Let d be the distance from the center of the needle to the nearest line. Next, let L be the line determined by the needle, and define  as the acute angle that the line L makes with the set of parallel lines. Let E be the event that the needle lies across the nearest line.</p>
+    <p>TO BE IMPLEMENTED</p>
+  </div>
+</script>
+<script>
+var BuffonsNeedle = Vue.component('-', {
+  template: '#buffons_needle_t',
+  data: function () {
+    return {}
+  },
+  methods: {}
+})
+</script>
+
+<!--
+<script type="text/x-template" id="component_name_t">
+  <div id="component_name">
+  </div>
+</script>
+<script>
+var ComponentName = Vue.component('-', {
+  template: '#component_name_t',
+  data: function () {
+    return {}
+  },
+  methods: {}
+})
+</script>
+-->
+
+<script type="text/x-template" id="app_t">
+  <div id="app_view">
+    <nav id="app_nav">
+      <div class="app_nav_link"><router-link to="/display_random">Display Random</router-link></div>
+      <div class="app_nav_link"><router-link to="/coin_tossing">Coin Tossing</router-link></div>
+      <div class="app_nav_link"><router-link to="/heads_or_tails">Heads or Tails</router-link></div>
+      <div class="app_nav_link"><router-link to="/dice_rolling">Dice Rolling</router-link></div>
+      <div class="app_nav_link"><router-link to="/spinner">Spinner</router-link></div>
+      <div class="app_nav_link"><router-link to="/monte_carlo_simulation">Monte Carlo Simulation</router-link></div>
+      <div class="app_nav_link"><router-link to="/buffons_needle">Buffons Needle</router-link></div>
+    </nav>
+    <div id="main">
+      <router-view></router-view>
+    </div>
+  </div>
+</script>
+<script>
+var router = new VueRouter({
+  routes: [
+    {path: "/", component: {template: "<h1>Index</h1>", data: function(){return {}}}},
+    {path: "/display_random", component: RandomNumber},
+    {path: "/coin_tossing", component: CoinTossing},
+    {path: "/heads_or_tails", component: HeadsOrTails},
+    {path: "/dice_rolling", component: DiceRolling},
+    {path: "/spinner", component: Spinner},
+    {path: "/monte_carlo_simulation", component: MonteCarloSimulation},
+    {path: "/buffons_needle", component: BuffonsNeedle}
+  ],
+})
+
+var app = new Vue({
+  el: "#app",
+  router: router,
+  components: {},
+  data: function () {
+    return {
+      msg: 'Hello Vue!'
+    }
+  },
+  template: '#app_t'
+})
+</script>
+<style>
+body, html {
+  padding: 0;
+  margin: 0;
+}
+#main {
+  width: calc(100% - 200px);
+  padding: 10px 0;
+}
+.page {
+  padding: 20px;
+  background: #f9f9f9;
+  margin: 0 auto;
+  width: calc(100% - 60px);
+}
+.graphic {
+  margin: 20px;
+}
+#app_view #app_nav {
+  width: 200px;
+  float: right;
+}
+.app_nav_link {
+  width: calc(100% - 20px);
+  height: 40px;
+  background: #DE0014;
+  padding: 10px
+}
+#app_view #app_nav .app_nav_link * {
+  color: white;
+  text-decoration: none;
+}
+</style>
