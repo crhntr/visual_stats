@@ -112,6 +112,7 @@ var HeadsOrTails = Vue.component('heads-tails', {
   methods: {
     display_random: function() {
       this.result_str = "";
+      this.pennies = 0;
       for (var i = 0; i < this.n; i++) {
         if(Math.floor((Math.random() * 2) + 0) === 1) {
           if (this.n < 10000) {
