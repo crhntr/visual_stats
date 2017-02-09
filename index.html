@@ -97,9 +97,9 @@ var CoinTossing = Vue.component('coin-tossing', {
     <input type="number" v-model="n" v-on:keyup.enter="display_random">
     <div>${{pennies / 100}}</div>
     <p class="graphic" v-if="roles.length > 0">
-      <span v-for="role in roles" v-if="n <= 40">
-        <img class="coin" v-if="role == 1" src="coin_head2.png" alt="H">
-        <img class="coin" v-else src="coin_tai2l.png" alt="T">
+      <span v-for="role in roles" v-if="n <= 400">
+        <img class="coin" v-if="role == 1" src="coin_head.png" alt="H">
+        <img class="coin" v-else src="coin_tail.png" alt="T">
       </span>
     </p>
     <p class="graphic" v-else color="red">
@@ -393,9 +393,7 @@ body, html {
   width: calc(100% - 20px);
   height: 40px;
   background: #DE0014;
-  padding: 10px;
-  cursor: pointer;
-  display: block;
+  padding: 10px
 }
 #app_view #app_nav .app_nav_link * {
   color: white;
