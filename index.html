@@ -98,8 +98,8 @@ var CoinTossing = Vue.component('coin-tossing', {
     <div>${{pennies / 100}}</div>
     <p class="graphic" v-if="roles.length > 0">
       <span v-for="role in roles" v-if="n <= 40">
-        <img class="coin" v-if="role == 1" src="coin_head2.png" alt="H">
-        <img class="coin" v-else src="coin_tai2l.png" alt="T">
+        <img class="coin" v-if="role == 1" src="assets/coin_heads.png" alt="H">
+        <img class="coin" v-else src="assets/coin_tails.png" alt="T">
       </span>
     </p>
     <p class="graphic" v-else color="red">
